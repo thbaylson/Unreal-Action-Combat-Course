@@ -23,6 +23,11 @@ void ULockonComponent::BeginPlay()
 	
 }
 
+void ULockonComponent::StartLockon()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Lockon Started"));
+}
+
 
 // Called every frame
 void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
