@@ -3,6 +3,17 @@
 	"EngineAssociation": "5.3",
 	"Category": "",
 	"Description": "",
+	"Modules": [
+		{
+			"Name": "ActionCombat",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"CoreUObject",
+				"Engine"
+			]
+		}
+	],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
