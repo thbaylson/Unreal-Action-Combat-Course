@@ -20,4 +20,6 @@ protected:
 	// The distinction between the two is a C++ specific concept.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere);
 	float CurrentVelocity{ 0.0f };
+
+	void UpdateVelocity();
 };
