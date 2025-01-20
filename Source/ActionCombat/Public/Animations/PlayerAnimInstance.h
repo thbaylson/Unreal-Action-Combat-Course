@@ -18,8 +18,9 @@ class ACTIONCOMBAT_API UPlayerAnimInstance : public UAnimInstance
 protected:
 	// This is an example of direct initialization (as opposed to copy initialization).
 	// The distinction between the two is a C++ specific concept.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float CurrentVelocity{ 0.0f };
 
+	UFUNCTION(BlueprintCallable)
 	void UpdateVelocity();
 };
