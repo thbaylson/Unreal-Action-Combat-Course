@@ -30,7 +30,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
+	void ToggleLockon(float Radius= 750.0f);
+
 	void StartLockon(float Radius= 750.0f);
+	void EndLockon();
 
 public:	
 	// Called every frame

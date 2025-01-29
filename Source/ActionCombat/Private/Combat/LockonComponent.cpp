@@ -30,6 +30,20 @@ void ULockonComponent::BeginPlay()
 	CurrentTargetActor = nullptr;
 }
 
+void ULockonComponent::ToggleLockon(float Radius)
+{
+	// The target is valid when we're already locked on to something.
+	if(IsValid(CurrentTargetActor))
+	{
+		EndLockon();
+	}
+	// If the target is null, try to find one
+	else 
+	{
+		StartLockon(Radius);
+	}
+}
+
 void ULockonComponent::StartLockon(float Radius)
 {
 	FHitResult OutResult;
@@ -66,6 +80,19 @@ void ULockonComponent::StartLockon(float Radius)
 
 	// This will move the camera higher which will ensure both the player and the target are in frame.
 	SpringArmComp->TargetOffset = FVector{ 0.0f, 0.0f, 100.0f };
+}
+
+void ULockonComponent::EndLockon()
+{
+	CurrentTargetActor = nullptr;
+
+	MovementComp->bOrientRotationToMovement = true;
+	MovementComp->bUseControllerDesiredRotation = false;
+
+	SpringArmComp->TargetOffset = FVector::ZeroVector;
+
+	// Consecutive calls to SetIgnoreLookInput stack. This will reset the value to false no matter what.
+	Controller->ResetIgnoreLookInput();
 }
 
 
