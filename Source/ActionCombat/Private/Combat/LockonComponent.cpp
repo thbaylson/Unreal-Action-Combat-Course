@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include <Kismet/KismetMathLibrary.h>
+#include <GameFramework/SpringArmComponent.h>
 
 // Sets default values for this component's properties
 ULockonComponent::ULockonComponent()
@@ -25,6 +26,7 @@ void ULockonComponent::BeginPlay()
 	OwnerRef = GetOwner<ACharacter>();
 	Controller = GetWorld()->GetFirstPlayerController();
 	MovementComp = OwnerRef->GetCharacterMovement();
+	SpringArmComp = OwnerRef->FindComponentByClass<USpringArmComponent>();
 	CurrentTargetActor = nullptr;
 }
 
@@ -61,6 +63,9 @@ void ULockonComponent::StartLockon(float Radius)
 	MovementComp->bUseControllerDesiredRotation = true;
 
 	CurrentTargetActor = OutResult.GetActor();
+
+	// This will move the camera higher which will ensure both the player and the target are in frame.
+	SpringArmComp->TargetOffset = FVector{ 0.0f, 0.0f, 100.0f };
 }
 
 
@@ -74,7 +79,10 @@ void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	FVector CurrentLocation{ OwnerRef->GetActorLocation() };
 	FVector TargetLocation{ CurrentTargetActor->GetActorLocation() };
 
-	FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
+	// Adjust the camera's target location. This will tilt the camera downwards.
+	TargetLocation.Z -= 125;
+
+	FRotator NewRotation{ UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation) };
 
 	Controller->SetControlRotation(NewRotation);
 }
