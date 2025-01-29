@@ -12,6 +12,12 @@ class ACTIONCOMBAT_API ULockonComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	ACharacter* OwnerRef;
+	APlayerController* Controller;
+
+	// This is an example of forward declaration, a way to inform the compiler about the existence of a class before fully defining it.
+	class UCharacterMovementComponent* MovementComp;
+
 public:	
 	// Sets default values for this component's properties
 	ULockonComponent();

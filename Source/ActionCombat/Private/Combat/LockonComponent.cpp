@@ -2,6 +2,8 @@
 
 
 #include "Combat/LockonComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
 ULockonComponent::ULockonComponent()
@@ -10,7 +12,7 @@ ULockonComponent::ULockonComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	// NOTE: Code inside constructors runs when the component is edited and when the game is playing.
 }
 
 
@@ -19,20 +21,21 @@ void ULockonComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	OwnerRef = GetOwner<ACharacter>();
+	Controller = GetWorld()->GetFirstPlayerController();
+	MovementComp = OwnerRef->GetCharacterMovement();
 }
 
 void ULockonComponent::StartLockon(float Radius)
 {
 	FHitResult OutResult;
-	FVector CurrentLocation{ GetOwner()->GetActorLocation() };
+	FVector CurrentLocation{ OwnerRef->GetActorLocation() };
 	FCollisionShape Sphere{ FCollisionShape::MakeSphere(Radius) };
 	FCollisionQueryParams IgnoreParams{
 		FName { TEXT("Ignore Collision Params") },
 		// This lets us ignore complex collision
 		false,
-		GetOwner()
+		OwnerRef
 	};
 
 	bool bHasFoundTarget{ GetWorld()->SweepSingleByChannel(
@@ -50,6 +53,10 @@ void ULockonComponent::StartLockon(float Radius)
 	
 	// string placeholders must be passed by reference
 	UE_LOG(LogTemp, Warning, TEXT("Actor Detected: %s"), *OutResult.GetActor()->GetName());
+
+	Controller->SetIgnoreLookInput(true);
+	MovementComp->bOrientRotationToMovement = false;
+	MovementComp->bUseControllerDesiredRotation = true;
 }
 
 
