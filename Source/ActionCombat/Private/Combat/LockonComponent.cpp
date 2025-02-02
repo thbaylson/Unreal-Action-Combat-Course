@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include <GameFramework/SpringArmComponent.h>
+#include "Interfaces/Enemy.h"
 
 // Sets default values for this component's properties
 ULockonComponent::ULockonComponent()
@@ -67,10 +68,11 @@ void ULockonComponent::StartLockon(float Radius)
 		IgnoreParams
 	) };
 
+	// Return early if we didn't find a target.
 	if (!bHasFoundTarget) { return; }
 	
-	// string placeholders must be passed by reference
-	UE_LOG(LogTemp, Warning, TEXT("Actor Detected: %s"), *OutResult.GetActor()->GetName());
+	// Return early if the target is not an enemy. Note that the generic is UEnemy, not IEnemy. This is how we validate interfaces in UE.
+	if (!OutResult.GetActor()->Implements<UEnemy>()) { return; }
 
 	Controller->SetIgnoreLookInput(true);
 	MovementComp->bOrientRotationToMovement = false;
@@ -101,13 +103,13 @@ void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// Return early if the target is invalid
+	// Return early if the target is invalid.
 	if (!IsValid(CurrentTargetActor)) { return; }
 
 	FVector CurrentLocation{ OwnerRef->GetActorLocation() };
 	FVector TargetLocation{ CurrentTargetActor->GetActorLocation() };
 
-	// Return early if the target is too far away
+	// Return early if the target is too far away.
 	double TargetDistance{ FVector::Distance(CurrentLocation, TargetLocation) };
 	if (TargetDistance >= BreakDistance) {
 		EndLockon();
