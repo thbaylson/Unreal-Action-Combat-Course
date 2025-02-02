@@ -101,10 +101,18 @@ void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// Return early if the target is invalid
 	if (!IsValid(CurrentTargetActor)) { return; }
 
 	FVector CurrentLocation{ OwnerRef->GetActorLocation() };
 	FVector TargetLocation{ CurrentTargetActor->GetActorLocation() };
+
+	// Return early if the target is too far away
+	double TargetDistance{ FVector::Distance(CurrentLocation, TargetLocation) };
+	if (TargetDistance >= BreakDistance) {
+		EndLockon();
+		return;
+	}
 
 	// Adjust the camera's target location. This will tilt the camera downwards.
 	TargetLocation.Z -= 125;

@@ -15,6 +15,7 @@ class ACTIONCOMBAT_API ULockonComponent : public UActorComponent
 	ACharacter* OwnerRef;
 	APlayerController* Controller;
 
+
 	// This is an example of forward declaration, a way to inform the compiler about the existence of a class before fully defining it.
 	class UCharacterMovementComponent* MovementComp;
 	class USpringArmComponent* SpringArmComp;
@@ -34,6 +35,9 @@ protected:
 
 	void StartLockon(float Radius= 750.0f);
 	void EndLockon();
+
+	UPROPERTY(EditAnywhere)
+	double BreakDistance{ 1000.0 };
 
 public:	
 	// Called every frame
