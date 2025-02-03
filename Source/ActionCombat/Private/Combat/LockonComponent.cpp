@@ -67,25 +67,30 @@ void ULockonComponent::StartLockon(float Radius)
 		Sphere,
 		IgnoreParams
 	) };
+	CurrentTargetActor = OutResult.GetActor();
 
 	// Return early if we didn't find a target.
 	if (!bHasFoundTarget) { return; }
 	
 	// Return early if the target is not an enemy. Note that the generic is UEnemy, not IEnemy. This is how we validate interfaces in UE.
-	if (!OutResult.GetActor()->Implements<UEnemy>()) { return; }
+	if (!CurrentTargetActor->Implements<UEnemy>()) { return; }
 
 	Controller->SetIgnoreLookInput(true);
 	MovementComp->bOrientRotationToMovement = false;
 	MovementComp->bUseControllerDesiredRotation = true;
 
-	CurrentTargetActor = OutResult.GetActor();
-
 	// This will move the camera higher which will ensure both the player and the target are in frame.
 	SpringArmComp->TargetOffset = FVector{ 0.0f, 0.0f, 100.0f };
+
+	IEnemy::Execute_OnSelect(CurrentTargetActor);
 }
 
 void ULockonComponent::EndLockon()
 {
+	if (IsValid(CurrentTargetActor) && CurrentTargetActor->Implements<UEnemy>()) {
+		IEnemy::Execute_OnDeselect(CurrentTargetActor);
+	}
+
 	CurrentTargetActor = nullptr;
 
 	MovementComp->bOrientRotationToMovement = true;
