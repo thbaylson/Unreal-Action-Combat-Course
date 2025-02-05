@@ -6,13 +6,27 @@
 #include "Components/ActorComponent.h"
 #include "TraceComponent.generated.h"
 
-
+// This component will be used by the player and by enemies. However, examples will be shown using the player character.
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONCOMBAT_API UTraceComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+	USkeletalMeshComponent* SkeletalComp;
+
+	// Ex: "sword_bottom"
+	UPROPERTY(EditAnywhere)
+	FName StartSocketName;
+
+	// Ex: "FX_Sword_Top"
+	UPROPERTY(EditAnywhere)
+	FName EndSocketName;
+
+	// Ex: "sword_bottom"
+	UPROPERTY(EditAnywhere)
+	FName SocketRotationName;
+
+public:
 	// Sets default values for this component's properties
 	UTraceComponent();
 
@@ -20,7 +34,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
