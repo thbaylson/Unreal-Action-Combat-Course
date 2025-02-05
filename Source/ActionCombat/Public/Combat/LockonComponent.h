@@ -6,6 +6,22 @@
 #include "Components/ActorComponent.h"
 #include "LockonComponent.generated.h"
 
+// This macro declares an event that other classes can listen to.
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+	// The name of the event.
+	// It is a good practice to use the "FOn" prefix and "Signature" suffix to indicate that it is an event.
+	FOnUpdatedTargetSignature,
+	// This is the class that contains the event.
+	ULockonComponent,
+	// The variable name.
+	// It is good practice for the variable name to be similar to the event name.
+	// It should not start with "F", but it should end with "Delegate".
+	OnUpdatedTargetDelegate,
+	// The data type of the parameter being passed to the event.
+	AActor*,
+	// The name of the parameter.
+	NewTargetActorRef
+);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONCOMBAT_API ULockonComponent : public UActorComponent
@@ -14,7 +30,6 @@ class ACTIONCOMBAT_API ULockonComponent : public UActorComponent
 
 	ACharacter* OwnerRef;
 	APlayerController* Controller;
-
 
 	// This is an example of forward declaration, a way to inform the compiler about the existence of a class before fully defining it.
 	class UCharacterMovementComponent* MovementComp;
@@ -25,6 +40,9 @@ public:
 	ULockonComponent();
 
 	AActor* CurrentTargetActor;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUpdatedTargetSignature OnUpdatedTargetDelegate;
 
 protected:
 	// Called when the game starts
@@ -43,5 +61,5 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+
 };

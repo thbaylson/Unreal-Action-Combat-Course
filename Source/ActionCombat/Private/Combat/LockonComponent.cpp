@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Combat/LockonComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -17,7 +14,6 @@ ULockonComponent::ULockonComponent()
 
 	// NOTE: Code inside constructors runs when the component is edited and when the game is playing.
 }
-
 
 // Called when the game starts
 void ULockonComponent::BeginPlay()
@@ -83,6 +79,8 @@ void ULockonComponent::StartLockon(float Radius)
 	SpringArmComp->TargetOffset = FVector{ 0.0f, 0.0f, 100.0f };
 
 	IEnemy::Execute_OnSelect(CurrentTargetActor);
+
+	OnUpdatedTargetDelegate.Broadcast(CurrentTargetActor);
 }
 
 void ULockonComponent::EndLockon()
@@ -100,8 +98,9 @@ void ULockonComponent::EndLockon()
 
 	// Consecutive calls to SetIgnoreLookInput stack. This will reset the value to false no matter what.
 	Controller->ResetIgnoreLookInput();
-}
 
+	OnUpdatedTargetDelegate.Broadcast(CurrentTargetActor);
+}
 
 // Called every frame
 void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -128,4 +127,3 @@ void ULockonComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	Controller->SetControlRotation(NewRotation);
 }
-
