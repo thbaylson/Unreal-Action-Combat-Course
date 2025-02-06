@@ -34,7 +34,7 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	BoxHalfExtent /= 2;
 
 	TArray<FHitResult> OutResults;
-	FCollisionShape CollisionBox{ FCollisionShape::MakeBox(BoxHalfExtent) };//(EndSocketLocation - StartSocketLocation)/2
+	FCollisionShape CollisionBox{ FCollisionShape::MakeBox(BoxHalfExtent) };
 	FCollisionQueryParams IgnoreParams{
 		FName { TEXT("Ignore Params") },
 		false,
@@ -65,7 +65,7 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			CenterPoint,
 			CollisionBox.GetExtent(),
 			bHasFoundTargets ? FLinearColor::Green : FLinearColor::Red,
-			// Need to convert FQuat to FRotator
+			// Need to convert FQuat to FRotator.
 			ShapeRotation.Rotator(),
 			// This is the duration of the debug line in seconds.
 			0.75f,
