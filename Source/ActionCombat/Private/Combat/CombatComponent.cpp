@@ -19,12 +19,27 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CharacterRef = GetOwner<ACharacter>();	
+	CharacterRef = GetOwner<ACharacter>();
+}
+
+// Called every frame
+void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UCombatComponent::ComboAttack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Combat Button Pressed"));
+	// Return early if we can't attack
+	if (!bCanAttack) { return; }
+	bCanAttack = false;
+
+	// Return early if we don't have any attack animations. This can happen when hot reload fails to re-link member variables.
+	if (AttackAnimations.Num() == 0) {
+		UE_LOG(LogTemp, Warning, TEXT("No attack animations found on Combat component for %s"), *CharacterRef->GetFName().ToString());
+		return;
+	}
+
 	CharacterRef->PlayAnimMontage(AttackAnimations[ComboCounter]);
 
 	// This seems like a lot of extra work when we could just do:
@@ -39,10 +54,7 @@ void UCombatComponent::ComboAttack()
 	);
 }
 
-// Called every frame
-void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UCombatComponent::HandleResetAttack()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	bCanAttack = true;
 }

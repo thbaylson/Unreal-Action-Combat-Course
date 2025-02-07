@@ -16,6 +16,9 @@ class ACTIONCOMBAT_API UCombatComponent : public UActorComponent
 
 	UPROPERTY(VisibleAnywhere)
 	int ComboCounter{ 0 };
+	
+	UPROPERTY(VisibleAnywhere)
+	bool bCanAttack{ true };
 
 public:	
 	// Sets default values for this component's properties
@@ -25,12 +28,14 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable)
-	void ComboAttack();
-
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION(BlueprintCallable)
+	void ComboAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void HandleResetAttack();
+
 };
