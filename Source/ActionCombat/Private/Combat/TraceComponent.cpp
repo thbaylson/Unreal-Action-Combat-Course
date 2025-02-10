@@ -52,30 +52,28 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		IgnoreParams
 	);
 
-	// We could probably use the debug preprocessor directive here instead.
-	if (bDebugMode)
-	{
-		FVector CenterPoint{
-			UKismetMathLibrary::VLerp(
-				StartSocketLocation,
-				EndSocketLocation,
-				0.5f
-			)
-		};
+#ifdef UE_BUILD_DEBUG
+	FVector CenterPoint{
+		UKismetMathLibrary::VLerp(
+			StartSocketLocation,
+			EndSocketLocation,
+			0.5f
+		)
+	};
 
-		UKismetSystemLibrary::DrawDebugBox(
-			GetWorld(),
-			CenterPoint,
-			CollisionBox.GetExtent(),
-			bHasFoundTargets ? FLinearColor::Green : FLinearColor::Red,
-			// Need to convert FQuat to FRotator.
-			ShapeRotation.Rotator(),
-			// This is the duration of the debug line in seconds.
-			0.75f,
-			// This is the thickness of the debug line.
-			2.0f
-		);
-	}
+	UKismetSystemLibrary::DrawDebugBox(
+		GetWorld(),
+		CenterPoint,
+		CollisionBox.GetExtent(),
+		bHasFoundTargets ? FLinearColor::Green : FLinearColor::Red,
+		// Need to convert FQuat to FRotator.
+		ShapeRotation.Rotator(),
+		// This is the duration of the debug line in seconds.
+		0.75f,
+		// This is the thickness of the debug line.
+		2.0f
+	);
+#endif
 
 	// Return early if there are no results from the sweep.
 	if (OutResults.Num() == 0) { return; }
@@ -97,6 +95,9 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	{
 		AActor* TargetActor{ Hit.GetActor() };
 
+		// Skip this loop early if the target actor should be ignored.
+		if (TargetsToIgnore.Contains(TargetActor)) { continue; }
+
 		// UE built-in for sending a damage event to the target actor.
 		TargetActor->TakeDamage(
 			CharacterDamage,
@@ -104,5 +105,13 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			GetOwner()->GetInstigatorController(),
 			GetOwner()
 		);
+
+		TargetsToIgnore.AddUnique(TargetActor);
 	}
+}
+
+// This function is called from the animation blueprint of the attacking character.
+void UTraceComponent::HandleResetAttack()
+{
+	TargetsToIgnore.Empty();
 }
