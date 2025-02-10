@@ -52,7 +52,9 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		IgnoreParams
 	);
 
-	if (bDebugMode) {
+	// We could probably use the debug preprocessor directive here instead.
+	if (bDebugMode)
+	{
 		FVector CenterPoint{
 			UKismetMathLibrary::VLerp(
 				StartSocketLocation,
@@ -60,7 +62,7 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 				0.5f
 			)
 		};
-		
+
 		UKismetSystemLibrary::DrawDebugBox(
 			GetWorld(),
 			CenterPoint,
@@ -79,11 +81,28 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	if (OutResults.Num() == 0) { return; }
 
 	float CharacterDamage{ 0.0f };
-	
+
 	IFighter* FighterRef{ Cast<IFighter>(GetOwner()) };
-	if (FighterRef) {
+	if (FighterRef)
+	{
 		CharacterDamage = FighterRef->GetDamage();
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), CharacterDamage);
+	FDamageEvent TargetAttackedEvent;
+
+	// We use const here to tell the compiler that we won't be modifying the Hit variable.
+	// We use & to pass the Hit variable by reference. This is more efficient than passing by value, which
+	// would create a whole new copy of the Hit variable.
+	for (const FHitResult& Hit : OutResults)
+	{
+		AActor* TargetActor{ Hit.GetActor() };
+
+		// UE built-in for sending a damage event to the target actor.
+		TargetActor->TakeDamage(
+			CharacterDamage,
+			TargetAttackedEvent,
+			GetOwner()->GetInstigatorController(),
+			GetOwner()
+		);
+	}
 }
