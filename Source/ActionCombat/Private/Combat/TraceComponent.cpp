@@ -24,6 +24,9 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// Return early if we aren't attacking.
+	if (!bIsAttacking) { return; }
+
 	FVector StartSocketLocation{ SkeletalComp->GetSocketLocation(StartSocketName) };
 	FVector EndSocketLocation{ SkeletalComp->GetSocketLocation(EndSocketName) };
 	FQuat ShapeRotation{ SkeletalComp->GetSocketQuaternion(SocketRotationName) };
