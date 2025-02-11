@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "EStat.h"
 #include "StatsComponent.generated.h"
 
 
@@ -15,6 +16,9 @@ class ACTIONCOMBAT_API UStatsComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UStatsComponent();
+
+	UPROPERTY(EditAnywhere)
+	TMap<TEnumAsByte<EStat>, float> Stats;
 
 protected:
 	// Called when the game starts
