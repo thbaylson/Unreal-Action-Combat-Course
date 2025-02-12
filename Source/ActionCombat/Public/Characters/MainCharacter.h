@@ -15,6 +15,26 @@ public:
 	// Sets default values for this character's properties
 	AMainCharacter();
 
+	// Player Components
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UPlayerActionsComponent* PlayerActionsComp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UStatsComponent* StatsComp;
+
+	// Combat Components
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UCombatComponent* CombatComp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class ULockonComponent* LockonComp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UTraceComponent* TraceComp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UBlockComponent* BlockComp;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
