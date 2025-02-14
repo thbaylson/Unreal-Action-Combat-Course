@@ -1,7 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Characters/PlayerActionsComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Interfaces/MainPlayer.h"
 
 // Sets default values for this component's properties
 UPlayerActionsComponent::UPlayerActionsComponent()
@@ -13,16 +13,18 @@ UPlayerActionsComponent::UPlayerActionsComponent()
 	// ...
 }
 
-
 // Called when the game starts
 void UPlayerActionsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	CharacterRef = GetOwner<ACharacter>();
+	MovementComp = CharacterRef->GetCharacterMovement();
 	
+	if (!CharacterRef->Implements<UMainPlayer>()) { return; }
+	
+	IPlayerRef = Cast<IMainPlayer>(CharacterRef);
 }
-
 
 // Called every frame
 void UPlayerActionsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -32,3 +34,14 @@ void UPlayerActionsComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	// ...
 }
 
+void UPlayerActionsComponent::Sprint()
+{
+	if (!IPlayerRef->HasEnoughStamina(SprintCost)) { return; }
+
+	MovementComp->MaxWalkSpeed = SprintSpeed;
+}
+
+void UPlayerActionsComponent::Walk()
+{
+	MovementComp->MaxWalkSpeed = WalkSpeed;
+}
