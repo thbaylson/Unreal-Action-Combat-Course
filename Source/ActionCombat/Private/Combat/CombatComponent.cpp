@@ -1,6 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Combat/CombatComponent.h"
+#include "Interfaces/MainPlayer.h"
 #include "GameFramework/Character.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -30,7 +29,23 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::ComboAttack()
 {
-	// Return early if we can't attack
+	// Attack stamina depends on the combo counter. Each attack gets more expensive.
+	float AttackStaminaCost{ (1 + (ComboCounter * 0.1f)) * AttackStaminaBaseCost };
+	// Return early if this component is not on the main character or if the main character doesn't have enough stamina.
+	if (CharacterRef->Implements<UMainPlayer>())
+	{
+		IMainPlayer* IPlayerRef{ Cast<IMainPlayer>(CharacterRef) };
+		if (IPlayerRef && !IPlayerRef->HasEnoughStamina(AttackStaminaCost))
+		{
+			return;
+		}
+	}
+	else
+	{
+		return;
+	}
+
+	// Return early if we can't attack.
 	if (!bCanAttack) { return; }
 	bCanAttack = false;
 
@@ -40,8 +55,6 @@ void UCombatComponent::ComboAttack()
 		return;
 	}
 
-	// Attack stamina depends on the combo counter. Each attack gets more expensive.
-	float AttackStaminaCost{ (1 + (ComboCounter * 0.1f)) * AttackStaminaBaseCost };
 	// Broadcast the attack performed event. This will deplete the character's stamina.
 	OnAttackPerformedDelegate.Broadcast(AttackStaminaCost);
 

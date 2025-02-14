@@ -33,7 +33,7 @@ void UStatsComponent::ReduceHealth(float Amount)
 	Stats[EStat::Health] = UKismetMathLibrary::FClamp(Stats[EStat::Health] - Amount, 0.0f, Stats[EStat::MaxHealth]);
 }
 
-// Note: What happens if the character doesn't have enough stamina? Hopefully this is addressed in a later lecture.
+// Note: The check for if we have enough stamina is handled by IMainPlayer. Strange, that we didn't add it to IFighter instead.
 void UStatsComponent::ReduceStamina(float Amount)
 {
 	Stats[EStat::Stamina] = UKismetMathLibrary::FClamp(Stats[EStat::Stamina] - Amount, 0.0f, Stats[EStat::MaxStamina]);
