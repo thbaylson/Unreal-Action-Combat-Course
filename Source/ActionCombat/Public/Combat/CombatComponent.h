@@ -4,6 +4,12 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+	FOnAttackPerformedSignature,
+	UCombatComponent, OnAttackPerformedDelegate,
+	float, AttackStaminaCost
+);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONCOMBAT_API UCombatComponent : public UActorComponent
 {
@@ -14,6 +20,9 @@ class ACTIONCOMBAT_API UCombatComponent : public UActorComponent
 
 	ACharacter* CharacterRef;
 
+	UPROPERTY(EditAnywhere)
+	float AttackStaminaBaseCost{ 5.0f };
+
 	UPROPERTY(VisibleAnywhere)
 	int ComboCounter{ 0 };
 	
@@ -23,6 +32,9 @@ class ACTIONCOMBAT_API UCombatComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UCombatComponent();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttackPerformedSignature OnAttackPerformedDelegate;
 
 protected:
 	// Called when the game starts

@@ -1,12 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "EStat.h"
 #include "StatsComponent.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONCOMBAT_API UStatsComponent : public UActorComponent
@@ -30,5 +27,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReduceHealth(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void ReduceStamina(float Amount);
 		
 };

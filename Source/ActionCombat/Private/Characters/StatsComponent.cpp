@@ -11,14 +11,12 @@ UStatsComponent::UStatsComponent()
 	// ...
 }
 
-
 // Called when the game starts
 void UStatsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
-
 
 // Called every frame
 void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -35,3 +33,8 @@ void UStatsComponent::ReduceHealth(float Amount)
 	Stats[EStat::Health] = UKismetMathLibrary::FClamp(Stats[EStat::Health] - Amount, 0.0f, Stats[EStat::MaxHealth]);
 }
 
+// Note: What happens if the character doesn't have enough stamina? Hopefully this is addressed in a later lecture.
+void UStatsComponent::ReduceStamina(float Amount)
+{
+	Stats[EStat::Stamina] = UKismetMathLibrary::FClamp(Stats[EStat::Stamina] - Amount, 0.0f, Stats[EStat::MaxStamina]);
+}

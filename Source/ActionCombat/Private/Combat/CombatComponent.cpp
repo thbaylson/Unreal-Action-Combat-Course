@@ -40,6 +40,11 @@ void UCombatComponent::ComboAttack()
 		return;
 	}
 
+	// Attack stamina depends on the combo counter. Each attack gets more expensive.
+	float AttackStaminaCost{ (1 + (ComboCounter * 0.1f)) * AttackStaminaBaseCost };
+	// Broadcast the attack performed event. This will deplete the character's stamina.
+	OnAttackPerformedDelegate.Broadcast(AttackStaminaCost);
+
 	CharacterRef->PlayAnimMontage(AttackAnimations[ComboCounter]);
 
 	// This seems like a lot of extra work when we could just do:
