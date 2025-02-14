@@ -1,5 +1,6 @@
 #include "Characters/StatsComponent.h"
 #include <Kismet/KismetMathLibrary.h>
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
@@ -36,5 +37,43 @@ void UStatsComponent::ReduceHealth(float Amount)
 // Note: The check for if we have enough stamina is handled by IMainPlayer. Strange, that we didn't add it to IFighter instead.
 void UStatsComponent::ReduceStamina(float Amount)
 {
+	bCanRegenerateStamina = false;
+
 	Stats[EStat::Stamina] = UKismetMathLibrary::FClamp(Stats[EStat::Stamina] - Amount, 0.0f, Stats[EStat::MaxStamina]);
+
+	FLatentActionInfo EnableStaminaRegenActionInfo{
+		// Linkage. Other values help with resuming a function that's been interupted, but we don't need that functionality.
+		0,
+		// A unique ID. It is unlikely 100 has already been taken.
+		100,
+		// The function name.
+		TEXT("EnableStaminaRegeneration"),
+		// The class that contains the function.
+		this	
+	};
+
+	UKismetSystemLibrary::RetriggerableDelay(
+		GetWorld(),
+		StaminaRegenerationDelayDuration,
+		// This function will be called after the delay timer runs out.
+		EnableStaminaRegenActionInfo
+	);
+}
+
+void UStatsComponent::RegenerateStamina()
+{
+	// Return early if we can't regenerate stamina.
+	if (!bCanRegenerateStamina) { return; }
+
+	Stats[EStat::Stamina] = UKismetMathLibrary::FInterpTo_Constant(
+		Stats[EStat::Stamina],
+		Stats[EStat::MaxStamina],
+		GetWorld()->DeltaTimeSeconds,
+		StaminaRegenerationRate
+	);
+}
+
+void UStatsComponent::EnableStaminaRegeneration()
+{
+	bCanRegenerateStamina = true;
 }

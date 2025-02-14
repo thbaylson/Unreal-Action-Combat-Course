@@ -36,9 +36,19 @@ void UPlayerActionsComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UPlayerActionsComponent::Sprint()
 {
-	if (!IPlayerRef->HasEnoughStamina(SprintCost)) { return; }
+	// Return early if the player doesn't have enough stamina. And walk instead.
+	if (!IPlayerRef->HasEnoughStamina(SprintCost))
+	{
+		Walk();
+		return;
+	}
+
+	// Return early if the player is not moving.
+	if (MovementComp->Velocity.Equals(FVector::ZeroVector, 1)) { return; }
 
 	MovementComp->MaxWalkSpeed = SprintSpeed;
+
+	OnSprintDelegate.Broadcast(SprintCost);
 }
 
 void UPlayerActionsComponent::Walk()
