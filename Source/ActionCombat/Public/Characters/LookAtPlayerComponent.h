@@ -15,6 +15,9 @@ class ACTIONCOMBAT_API ULookAtPlayerComponent : public UActorComponent
 	float RotationSpeed{ 400.0f };
 
 public:	
+	UPROPERTY(VisibleAnywhere)
+	bool bCanRotate{ false };
+
 	// Sets default values for this component's properties
 	ULookAtPlayerComponent();
 

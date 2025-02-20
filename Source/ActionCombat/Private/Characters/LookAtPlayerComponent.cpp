@@ -25,6 +25,9 @@ void ULookAtPlayerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// Return early if we can't rotate.
+	if (!bCanRotate) { return; }
+
 	FVector CurrentLocation = OwnerRef->GetActorLocation();
 	FVector PlayerLocation{ GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() };
 
