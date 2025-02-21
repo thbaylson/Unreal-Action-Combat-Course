@@ -8,6 +8,12 @@ UCLASS()
 class ACTIONCOMBAT_API AEnemyProjectile : public AActor
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* HitTemplate;
+
+	UPROPERTY(EditAnywhere)
+	float Damage{ 1.0f };
 	
 public:	
 	// Sets default values for this actor's properties
@@ -23,5 +29,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HandleBeginOverlap(AActor* OtherActor);
+
+	UFUNCTION()// Note: UE's timers require the UFUNCTION macro
+	void DestroyProjectile();
 
 };
