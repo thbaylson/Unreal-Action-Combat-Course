@@ -7,4 +7,6 @@ enum EEnemyState
 {
 	Idle,
 	Range,
+	Charge,
+	Melee,
 };
