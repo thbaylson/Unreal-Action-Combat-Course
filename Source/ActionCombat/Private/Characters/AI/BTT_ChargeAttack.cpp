@@ -35,5 +35,19 @@ void UBTT_ChargeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 void UBTT_ChargeAttack::ChargeAtPlayer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UBTT_ChargeAttack::ChargeAtPlayer"));
+	APawn* PlayerRef{ GetWorld()->GetFirstPlayerController()->GetPawn() };
+	FVector PlayerLocation{ PlayerRef->GetActorLocation() };
+
+	// Initialize and configure the move request.
+	FAIMoveRequest MoveRequest{ PlayerLocation };
+	// Note: We must add the object "Actors > Volumes > NavMeshBoundsVolume" to the level in order for the AI to pathfind.
+		// Note: By default, the "p" key toggles the visibility of the NavMeshBoundsVolume.
+	MoveRequest.SetUsePathfinding(true);
+	MoveRequest.SetAcceptanceRadius(AcceptanceRadius);
+
+	// Initiate the move request.
+	ControllerRef->MoveTo(MoveRequest);
+
+	// Make sure the AI is looking at the player.
+	ControllerRef->SetFocus(PlayerRef);
 }

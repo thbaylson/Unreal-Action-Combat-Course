@@ -14,6 +14,9 @@ class ACTIONCOMBAT_API UBTT_ChargeAttack : public UBTTaskNode
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	float AcceptanceRadius{ 100.0f };
+
 	AAIController* ControllerRef;
 
 	ACharacter* CharacterRef;
